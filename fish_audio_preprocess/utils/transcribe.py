@@ -22,18 +22,14 @@ def batch_transcribe(
 ):
     results = {}
     if model_type == "whisper":
-        import whisper
+        from faster_whisper import WhisperModel
 
         logger.info(f"Loading {model_size} model for {lang} transcription")
-        model = whisper.load_model(model_size)
+        model = WhisperModel(model_size, download_root='/home/zhongjiafeng/repo/fish-speech/faster_whisper')
         for file in tqdm(files, position=pos):
-            if lang in PROMPT:
-                result = model.transcribe(
-                    file, language=lang, initial_prompt=PROMPT[lang]
-                )
-            else:
-                result = model.transcribe(file, language=lang)
-            results[str(file)] = result["text"]
+            segments, info = model.transcribe(file, language=None, beam_size=5, initial_prompt="Punctuation is needed in any language.")
+            text = ''.join([s.text for s in segments])
+            results[str(file)] = text
     elif model_type == "funasr":
         from funasr import AutoModel
 

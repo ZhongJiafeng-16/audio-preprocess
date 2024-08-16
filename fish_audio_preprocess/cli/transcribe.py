@@ -26,7 +26,7 @@ def replace_lastest(string, old, new):
 @click.option(
     "--lang",
     help="language",
-    default="zh",
+    default="ar",
     show_default=True,
     type=str,
 )
@@ -34,7 +34,7 @@ def replace_lastest(string, old, new):
     "--model-size",
     # whisper 默认 medium, funasr 默认 paraformer-zh
     help="asr model size(default medium for whisper, paraformer-zh for funasr)",
-    default="medium",
+    default="large-v3",
     show_default=True,
     type=str,
 )
@@ -109,8 +109,8 @@ def transcribe(
             for res in ret.keys():
                 results[res] = ret[res]
 
-        logger.info("Output to .lab file")
-        for file in tqdm(results.keys()):
+        logger.info("Start writing to .lab file.")
+        for file in tqdm(results.keys(), desc="Writing..."):
             path = replace_lastest(file, ".wav", ".lab")
             # logger.info(path)
             with open(path, "w", encoding="utf-8") as f:
